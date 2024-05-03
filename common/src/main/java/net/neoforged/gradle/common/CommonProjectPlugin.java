@@ -1,5 +1,7 @@
 package net.neoforged.gradle.common;
 
+import net.neoforged.gradle.common.attributes.OperatingSystemDisambiguation;
+import net.neoforged.gradle.common.attributes.SideDisambiguation;
 import net.neoforged.gradle.common.caching.CentralCacheService;
 import net.neoforged.gradle.common.dependency.ExtraJarDependencyManager;
 import net.neoforged.gradle.common.extensions.*;
@@ -15,9 +17,12 @@ import net.neoforged.gradle.common.runtime.naming.OfficialNamingChannelConfigura
 import net.neoforged.gradle.common.tasks.DisplayMappingsLicenseTask;
 import net.neoforged.gradle.common.util.FileCacheUtils;
 import net.neoforged.gradle.common.util.TaskDependencyUtils;
+import net.neoforged.gradle.common.util.VersionJson;
 import net.neoforged.gradle.common.util.constants.RunsConstants;
 import net.neoforged.gradle.common.util.exceptions.MultipleDefinitionsFoundException;
 import net.neoforged.gradle.common.util.run.RunsUtil;
+import net.neoforged.gradle.dsl.common.attributes.OperatingSystem;
+import net.neoforged.gradle.dsl.common.attributes.Side;
 import net.neoforged.gradle.dsl.common.extensions.*;
 import net.neoforged.gradle.dsl.common.extensions.dependency.replacement.DependencyReplacement;
 import net.neoforged.gradle.dsl.common.extensions.repository.Repository;
@@ -31,6 +36,7 @@ import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.api.attributes.AttributeMatchingStrategy;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Delete;
@@ -50,6 +56,19 @@ public class CommonProjectPlugin implements Plugin<Project> {
     
     @Override
     public void apply(Project project) {
+        project.getDependencies().attributesSchema(attributesSchema -> {
+            AttributeMatchingStrategy<OperatingSystem> osAttribute = attributesSchema.attribute(OperatingSystem.OPERATING_SYSTEM_ATTRIBUTE);
+            String osName = VersionJson.OS.getCurrent().getName();
+            if (!osName.equals(VersionJson.OS.UNKNOWN.getName())) {
+                osAttribute.getDisambiguationRules().add(OperatingSystemDisambiguation.class, config -> config.params(
+                        project.getObjects().named(OperatingSystem.class, osName)
+                ));
+            }
+            attributesSchema.attribute(Side.SIDE_ATTRIBUTE).getDisambiguationRules().add(SideDisambiguation.class, config -> config.params(
+                    project.getObjects().named(Side.class, Side.JOINED)
+            ));
+        });
+
         //Apply the evaluation extension to monitor immediate execution of indirect tasks when evaluation already happened.
         project.getExtensions().create(NamingConstants.Extension.EVALUATION, ProjectEvaluationExtension.class, project);
 
