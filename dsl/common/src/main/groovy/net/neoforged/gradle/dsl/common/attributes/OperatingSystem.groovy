@@ -6,7 +6,7 @@ import org.gradle.api.attributes.Attribute
 
 @CompileStatic
 interface OperatingSystem extends Named {
-    Attribute<OperatingSystem> OPERATING_SYSTEM_ATTRIBUTE = Attribute.of("net.neoforged.neogradle.operatingsystem", OperatingSystem.class)
+    Attribute<OperatingSystem> OPERATING_SYSTEM_ATTRIBUTE = Attribute.of("net.neoforged.operatingsystem", OperatingSystem.class)
 
     String WINDOWS = "windows"
     String LINUX = "linux"

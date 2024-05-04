@@ -5,10 +5,9 @@ import org.gradle.api.Named
 import org.gradle.api.attributes.Attribute
 
 @CompileStatic
-interface Side extends Named {
-    Attribute<Side> SIDE_ATTRIBUTE = Attribute.of("net.neoforged.neogradle.side", Side.class)
+interface Distribution extends Named {
+    Attribute<Distribution> SIDE_ATTRIBUTE = Attribute.of("net.neoforged.distribution", Distribution.class)
 
     String SERVER = "server"
     String CLIENT = "client"
-    String JOINED = "joined"
 }

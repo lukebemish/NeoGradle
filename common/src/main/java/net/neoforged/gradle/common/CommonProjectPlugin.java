@@ -15,14 +15,13 @@ import net.neoforged.gradle.common.runtime.definition.CommonRuntimeDefinition;
 import net.neoforged.gradle.common.runtime.extensions.RuntimesExtension;
 import net.neoforged.gradle.common.runtime.naming.OfficialNamingChannelConfigurator;
 import net.neoforged.gradle.common.tasks.DisplayMappingsLicenseTask;
-import net.neoforged.gradle.common.util.FileCacheUtils;
 import net.neoforged.gradle.common.util.TaskDependencyUtils;
 import net.neoforged.gradle.common.util.VersionJson;
 import net.neoforged.gradle.common.util.constants.RunsConstants;
 import net.neoforged.gradle.common.util.exceptions.MultipleDefinitionsFoundException;
 import net.neoforged.gradle.common.util.run.RunsUtil;
 import net.neoforged.gradle.dsl.common.attributes.OperatingSystem;
-import net.neoforged.gradle.dsl.common.attributes.Side;
+import net.neoforged.gradle.dsl.common.attributes.Distribution;
 import net.neoforged.gradle.dsl.common.extensions.*;
 import net.neoforged.gradle.dsl.common.extensions.dependency.replacement.DependencyReplacement;
 import net.neoforged.gradle.dsl.common.extensions.repository.Repository;
@@ -38,7 +37,6 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.attributes.AttributeMatchingStrategy;
 import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.plugins.ide.eclipse.EclipsePlugin;
@@ -64,8 +62,8 @@ public class CommonProjectPlugin implements Plugin<Project> {
                         project.getObjects().named(OperatingSystem.class, osName)
                 ));
             }
-            attributesSchema.attribute(Side.SIDE_ATTRIBUTE).getDisambiguationRules().add(SideDisambiguation.class, config -> config.params(
-                    project.getObjects().named(Side.class, Side.JOINED)
+            attributesSchema.attribute(Distribution.SIDE_ATTRIBUTE).getDisambiguationRules().add(SideDisambiguation.class, config -> config.params(
+                    project.getObjects().named(Distribution.class, Distribution.CLIENT)
             ));
         });
 
